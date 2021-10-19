@@ -108,7 +108,7 @@ class GameWindow : public Gosu::Window
 {
 
 	Gosu::Image apfel;
-	Gosu::Image Nike;
+	Gosu::Image nike;
 	Gosu::Sample biss;
 	
 	//Schlange erstellen
@@ -118,6 +118,8 @@ class GameWindow : public Gosu::Window
 	Essen e;
 	double apfel_scale_height = 1.0;
 	double apfel_scale_width = 1.0;
+	double nike_scale_height = 1.0;
+	double nike_scale_width = 1.0;
 
 	Gosu::Font text;
 
@@ -126,11 +128,15 @@ public:
 		: Window(805, 605)//, true) noch anhängen, wenn Vollbild benötigt wird.
 		, apfel("apfel.png"), text(10),
 		biss("biss.mp3"),
-		Nike("nike.png")
+		nike("nike.png")
 	{
 		set_caption("Snake by Kevin-Marcel Schnell & Nils Hepp");
 		apfel_scale_height = 10.0 / apfel.height();
 		apfel_scale_width = 10.0 / apfel.width();
+		nike_scale_height = 10.0 / nike.height();
+		nike_scale_width = 10.0 / nike.width();
+		srand(time(NULL));
+
 	}
 
 
@@ -203,7 +209,6 @@ public:
 		// Neues Essen erscheinen lassen + Schlange länger machen ++++++++++++++++++++ !Funktioniert noch nicht!
 		if ((s.pos.at(0).x == e.posess.x) && (s.pos.at(0).y == e.posess.y)) {
 			biss.play(1, 0.8) ;
-			s.geschwindigkeit--;
 			e.random_posess();
 			s.verlaengern();
 			
