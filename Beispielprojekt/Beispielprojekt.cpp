@@ -122,8 +122,6 @@ public:
 		apfel_scale_width = 10.0 / apfel.width();
 		nike_scale_height = 10.0 / nike.height();
 		nike_scale_width = 10.0 / nike.width();
-		srand(time(NULL));
-
 	}
 
 
@@ -249,6 +247,7 @@ public:
 // C++ Hauptprogramm
 int main()
 {
+	srand(time(NULL));
 	//High-Score Einlesen
 	ifstream f("HighScore.txt");
 	if (f >> highscore)
