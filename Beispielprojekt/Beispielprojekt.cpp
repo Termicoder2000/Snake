@@ -8,14 +8,13 @@
 //Wozu time ?
 #include <time.h>
 
-
-
 using namespace std;
 
-string score_txt = "String";
+string score_txt = "Score: 0";
 string highscore_txt = "High-Score";
 int score = 0;
 int highscore;
+
 
 //Hilfs Struct für die Position der Schlange
 struct Position
@@ -67,8 +66,6 @@ public:
 class Essen
 {
 	
-
-
 public:
 	
 	Position posess;
@@ -93,7 +90,7 @@ public:
 
 class GameWindow : public Gosu::Window
 {
-public:
+
 	Gosu::Image apfel;
 	
 	//Schlange erstellen
@@ -104,15 +101,24 @@ public:
 	double apfel_scale_height = 1.0;
 	double apfel_scale_width = 1.0;
 
+	Gosu::Font text;
+
+public:
 	GameWindow()
 		: Window(805, 605)//, true) noch anhängen, wenn Vollbild benötigt wird.
-		, apfel("apfel.png")
+		, apfel("apfel.png"), text(10)
 	{
 		set_caption("Snake by Kevin-Marcel Schnell & Nils Hepp");
 		apfel_scale_height = 10.0 / apfel.height();
 		apfel_scale_width = 10.0 / apfel.width();
 
 	}
+
+
+	int Spielbrettbegrenzung_x_max = 795;
+	int Spielbrettbegrenzung_x_min = 5;
+	int Spielbrettbegrenzung_y_max = 595;
+	int Spielbrettbegrenzung_y_min = 105;
 
 
 	void draw() override
@@ -143,6 +149,10 @@ public:
 			}
 		}
 
+		graphics().draw_line(Spielbrettbegrenzung_x_max, Spielbrettbegrenzung_y_max, Gosu::Color::WHITE, Spielbrettbegrenzung_x_max, Spielbrettbegrenzung_y_min, Gosu::Color::WHITE, 0.0);
+		graphics().draw_line(Spielbrettbegrenzung_x_max, Spielbrettbegrenzung_y_max, Gosu::Color::WHITE, Spielbrettbegrenzung_x_min, Spielbrettbegrenzung_y_max, Gosu::Color::WHITE, 0.0);
+		graphics().draw_line(Spielbrettbegrenzung_x_min, Spielbrettbegrenzung_y_min, Gosu::Color::WHITE, Spielbrettbegrenzung_x_max, Spielbrettbegrenzung_y_min, Gosu::Color::WHITE, 0.0);
+		graphics().draw_line(Spielbrettbegrenzung_x_min, Spielbrettbegrenzung_y_min, Gosu::Color::WHITE, Spielbrettbegrenzung_x_min, Spielbrettbegrenzung_y_max, Gosu::Color::WHITE, 0.0);
 		// Essen zeichnen ++++++++++++++++++++++++++++++++++++++++++++++
 		apfel.draw_rot(e.posess.x, e.posess.y, 0.0,
 			0.0, // Rotationswinkel in Grad
@@ -150,31 +160,8 @@ public:
 			apfel_scale_width, apfel_scale_height
 		);
 
-		/*
-		graphics().draw_quad(
-			(e.posess.x - 5), (e.posess.y + 5), Gosu::Color::GREEN,
-			(e.posess.x + 5), (e.posess.y + 5), Gosu::Color::GREEN,
-			(e.posess.x - 5), (e.posess.y - 5), Gosu::Color::GREEN,
-			(e.posess.x + 5), (e.posess.y - 5), Gosu::Color::GREEN,
-			0.0);
-		
-		/*graphics().draw_rect(
-			e.posess.x, e.posess.y, 10, 10, Gosu::Color::GREEN, 0
-		);*/
-
-
-		//https://www.libgosu.org/cpp/class_gosu_1_1_font.html#a86067397eacecc5fd88f447038a88b1d Damit Score und High-Score auf Bildschirm ausgeben
-		//Int muss noch zu String umgewandelt werden!!
-
-		void Gosu::Font::draw_text(score_txt,
-			10,
-			10,
-			0.0,
-			1,
-			1,
-			Color::WHITE,
-			AM_DEFAULT
-		)		const
+		text.draw_text(score_txt, 100, 20, 0, 5, 5);
+		text.draw_text(highscore_txt, 400, 20, 0, 5, 5);
 	}
 
 
@@ -226,7 +213,7 @@ public:
 
 		
 		// Spielfeldbegrenzung ++++++++++++++++++++++++++++++++
-		if (s.pos.at(0).x <= -5 || s.pos.at(0).x > 800 || s.pos.at(0).y <= -1 || s.pos.at(0).y > 500) {
+		if (s.pos.at(0).x <= Spielbrettbegrenzung_x_min || s.pos.at(0).x > Spielbrettbegrenzung_x_max || s.pos.at(0).y <= Spielbrettbegrenzung_y_min || s.pos.at(0).y > Spielbrettbegrenzung_y_max) {
 		Window::close(); // Schließt nur, lässt nicht neu starten.
 		}
 
@@ -245,17 +232,14 @@ public:
 // C++ Hauptprogramm
 int main()
 {
-	//HighScore Einlesen
+	//High-Score Einlesen
 	ifstream f("HighScore.txt");
-	
 	if (f >> highscore)
 	{
 		highscore_txt = to_string(highscore);
 		highscore_txt = "High-Score: " + highscore_txt;
 		cout << highscore_txt << endl;
 	}
-
-
 	GameWindow window;
 	window.show();
 }
