@@ -30,7 +30,7 @@ class Schlange
 {
 public:
 	int laenge = 10;
-	int geschwindigkeit = 10;
+	int geschwindigkeit = 5;
 
 	//Versuch, vielleicht sieht es so nach dem Essen besser aus
 	bool draw_freigabe = true;
