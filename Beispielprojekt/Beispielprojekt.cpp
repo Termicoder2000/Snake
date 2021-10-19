@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <fstream>
 #include <random>
 //Wozu time ?
 #include <time.h>
@@ -11,9 +12,10 @@
 
 using namespace std;
 
-int Bildschirmbreite = 800;
-int Bildschirmhˆhre = 600;
-
+string score_txt = "String";
+string highscore_txt = "High-Score";
+int score = 0;
+int highscore;
 
 //Hilfs Struct f¸r die Position der Schlange
 struct Position
@@ -81,7 +83,7 @@ public:
 		this->laenge = 1;
 
 		//Startwert festlegen
-		this->posess = { 10 * this->random_x(), 10 * this->random_y() };
+		random_posess();
 
 	}
 };
@@ -103,6 +105,7 @@ public:
 	{
 		set_caption("Snake by Kevin-Marcel Schnell & Nils Hepp");
 	}
+
 
 	void draw() override
 	{
@@ -145,6 +148,19 @@ public:
 			e.posess.x, e.posess.y, 10, 10, Gosu::Color::GREEN, 0
 		);*/
 
+
+		//https://www.libgosu.org/cpp/class_gosu_1_1_font.html#a86067397eacecc5fd88f447038a88b1d Damit Score und High-Score auf Bildschirm ausgeben
+		//Int muss noch zu String umgewandelt werden!!
+
+		void Gosu::Font::draw_text(score_txt,
+			10,
+			10,
+			0.0,
+			1,
+			1,
+			Color::WHITE,
+			AM_DEFAULT
+		)		const
 	}
 
 
@@ -169,6 +185,21 @@ public:
 			s.geschwindigkeit--;
 			e.random_posess();
 			s.verlaengern();
+			
+			//Score aktuallisieren und in String speichern
+			score++;
+			score_txt = to_string(score);
+			score_txt = "Score: " + score_txt;
+
+			//ggfs. Highscore aktuallisieren und in Tetdatei schreiben
+			if (score > highscore)
+			{
+				highscore = score;
+				ofstream x("HighScore.txt");
+				x << highscore << endl;
+				highscore_txt = to_string(highscore);
+				highscore_txt = "High-Score: " + highscore_txt;
+			}
 		}
 
 		//Geschwindigkeitsregelung f¸r die Schlange (nicht Linear!!)
@@ -181,8 +212,8 @@ public:
 
 		
 		// Spielfeldbegrenzung ++++++++++++++++++++++++++++++++
-		if (s.pos.at(0).x <= -5 || s.pos.at(0).x > 800 || s.pos.at(0).y <= -1 || s.pos.at(0).y > 600) {
-		Window:close(); // Schlieﬂt nur, l‰sst nicht neu starten.
+		if (s.pos.at(0).x <= -5 || s.pos.at(0).x > 800 || s.pos.at(0).y <= -1 || s.pos.at(0).y > 500) {
+		Window::close(); // Schlieﬂt nur, l‰sst nicht neu starten.
 		}
 
 		// Falls Schlange sich selbst essen will
@@ -200,6 +231,17 @@ public:
 // C++ Hauptprogramm
 int main()
 {
+	//HighScore Einlesen
+	ifstream f("HighScore.txt");
+	
+	if (f >> highscore)
+	{
+		highscore_txt = to_string(highscore);
+		highscore_txt = "High-Score: " + highscore_txt;
+		cout << highscore_txt << endl;
+	}
+
+
 	GameWindow window;
 	window.show();
 }
