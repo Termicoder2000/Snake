@@ -349,8 +349,3 @@ void Essen::random_posess()
 	this->posess.x = (10 * random_x() + 10);
 	this->posess.y = (10 * random_y() + 100);
 }
-/*
-int Spielbrettbegrenzung_x_max = 795;
-int Spielbrettbegrenzung_x_min = 5;
-int Spielbrettbegrenzung_y_max = 595;
-int Spielbrettbegrenzung_y_min = 105;*/
