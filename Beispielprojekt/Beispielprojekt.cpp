@@ -86,22 +86,8 @@ public:
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 // Sonderobjekte
-class Sonderobjekte
+class Sonderobjekte : public Essen
 {
-	Position posess;
-
-	// random
-	void random_posess();
-	int random_x();
-	int random_y();
-
-	//Konstruktor des Essens
-	Sonderobjekte()
-	{
-		//Startwert festlegen
-		random_posess();
-
-	}
 };
 
 class GameWindow : public Gosu::Window
@@ -116,6 +102,7 @@ class GameWindow : public Gosu::Window
 
 	// Essen erstellen
 	Essen e;
+	
 	double apfel_scale_height = 1.0;
 	double apfel_scale_width = 1.0;
 	double nike_scale_height = 1.0;
@@ -216,6 +203,11 @@ public:
 			score++;
 			score_txt = to_string(score);
 			score_txt = "Score: " + score_txt;
+
+			if (score % 3 == 0) { //*************************컴컴컴컴컴횼DEEEEEEEEEEEEEERN
+				Sonderobjekte nike;
+				nike.random_posess();
+			}
 
 			//ggfs. Highscore aktuallisieren und in Tetdatei schreiben
 			if (score > highscore)
