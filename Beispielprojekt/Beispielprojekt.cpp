@@ -336,18 +336,18 @@ void Schlange::verlaengern()
 
 int Essen::random_x()
 {
-	return rand() % 81;
+	return rand() % 80;
 }
 
 int Essen::random_y()
 {
-	return rand() % 69;
+	return rand() % 49;
 }
 
 void Essen::random_posess()
 {
-	this->posess.x = (10 * random_x());
-	this->posess.y = (10 * random_y());
+	this->posess.x = (10 * random_x() + 10);
+	this->posess.y = (10 * random_y() + 100);
 }
 /*
 int Spielbrettbegrenzung_x_max = 795;
