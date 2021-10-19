@@ -66,8 +66,6 @@ public:
 class Essen
 {
 	
-
-
 public:
 	
 	Position posess;
@@ -98,7 +96,7 @@ class Sonderobjekte
 	int random_y();
 
 	//Konstruktor des Essens
-	Essen()
+	Sonderobjekte()
 	{
 		//Startwert festlegen
 		random_posess();
@@ -126,12 +124,13 @@ class GameWindow : public Gosu::Window
 public:
 	GameWindow()
 		: Window(805, 605)//, true) noch anhängen, wenn Vollbild benötigt wird.
-		, apfel("apfel.png")
+		, apfel("apfel.png"), text(10),
+		biss("biss.mp3"),
+		Nike("nike.png")
 	{
 		set_caption("Snake by Kevin-Marcel Schnell & Nils Hepp");
 		apfel_scale_height = 10.0 / apfel.height();
 		apfel_scale_width = 10.0 / apfel.width();
-
 	}
 
 
@@ -180,31 +179,8 @@ public:
 			apfel_scale_width, apfel_scale_height
 		);
 
-		/*
-		graphics().draw_quad(
-			(e.posess.x - 5), (e.posess.y + 5), Gosu::Color::GREEN,
-			(e.posess.x + 5), (e.posess.y + 5), Gosu::Color::GREEN,
-			(e.posess.x - 5), (e.posess.y - 5), Gosu::Color::GREEN,
-			(e.posess.x + 5), (e.posess.y - 5), Gosu::Color::GREEN,
-			0.0);
-		
-		/*graphics().draw_rect(
-			e.posess.x, e.posess.y, 10, 10, Gosu::Color::GREEN, 0
-		);*/
-
-
-		//https://www.libgosu.org/cpp/class_gosu_1_1_font.html#a86067397eacecc5fd88f447038a88b1d Damit Score und High-Score auf Bildschirm ausgeben
-		//Int muss noch zu String umgewandelt werden!!
-
-		void Gosu::Font::draw_text(score_txt,
-			10,
-			10,
-			0.0,
-			1,
-			1,
-			Color::WHITE,
-			AM_DEFAULT
-		)		const
+		text.draw_text(score_txt, 100, 20, 0, 5, 5);
+		text.draw_text(highscore_txt, 400, 20, 0, 5, 5);
 	}
 
 
@@ -365,7 +341,7 @@ int Essen::random_x()
 
 int Essen::random_y()
 {
-	return rand() % 61;
+	return rand() % 69;
 }
 
 void Essen::random_posess()
@@ -373,3 +349,8 @@ void Essen::random_posess()
 	this->posess.x = (10 * random_x());
 	this->posess.y = (10 * random_y());
 }
+/*
+int Spielbrettbegrenzung_x_max = 795;
+int Spielbrettbegrenzung_x_min = 5;
+int Spielbrettbegrenzung_y_max = 595;
+int Spielbrettbegrenzung_y_min = 105;*/
