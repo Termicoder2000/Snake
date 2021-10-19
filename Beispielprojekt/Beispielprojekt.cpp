@@ -66,10 +66,11 @@ public:
 // Ich habe Position in public gemacht weil ich es einfacher fand - ist natürlich nicht optimal
 class Essen
 {
-	int laenge;
+	
+
 
 public:
-
+	
 	Position posess;
 
 	// random
@@ -80,7 +81,7 @@ public:
 	//Konstruktor des Essens
 	Essen()
 	{
-		this->laenge = 1;
+	
 
 		//Startwert festlegen
 		random_posess();
@@ -88,22 +89,29 @@ public:
 	}
 };
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
+//Test-Beispiel
 
 class GameWindow : public Gosu::Window
 {
 public:
-
+	Gosu::Image apfel;
+	
 	//Schlange erstellen
 	Schlange s;
 
 	// Essen erstellen
 	Essen e;
+	double apfel_scale_height = 1.0;
+	double apfel_scale_width = 1.0;
 
 	GameWindow()
 		: Window(805, 605)//, true) noch anhängen, wenn Vollbild benötigt wird.
+		, apfel("apfel.png")
 	{
 		set_caption("Snake by Kevin-Marcel Schnell & Nils Hepp");
+		apfel_scale_height = 10.0 / apfel.height();
+		apfel_scale_width = 10.0 / apfel.width();
+
 	}
 
 
@@ -136,7 +144,13 @@ public:
 		}
 
 		// Essen zeichnen ++++++++++++++++++++++++++++++++++++++++++++++
+		apfel.draw_rot(e.posess.x, e.posess.y, 0.0,
+			0.0, // Rotationswinkel in Grad
+			0.5, 0.5, // Position der "Mitte" relativ zu x, y
+			apfel_scale_width, apfel_scale_height
+		);
 
+		/*
 		graphics().draw_quad(
 			(e.posess.x - 5), (e.posess.y + 5), Gosu::Color::GREEN,
 			(e.posess.x + 5), (e.posess.y + 5), Gosu::Color::GREEN,
