@@ -66,6 +66,8 @@ public:
 class Essen
 {
 	
+
+
 public:
 	
 	Position posess;
@@ -78,20 +80,38 @@ public:
 	//Konstruktor des Essens
 	Essen()
 	{
-	
-
 		//Startwert festlegen
 		random_posess();
 
 	}
 };
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//Test-Beispiel
+
+// Sonderobjekte
+class Sonderobjekte
+{
+	Position posess;
+
+	// random
+	void random_posess();
+	int random_x();
+	int random_y();
+
+	//Konstruktor des Essens
+	Essen()
+	{
+		//Startwert festlegen
+		random_posess();
+
+	}
+};
 
 class GameWindow : public Gosu::Window
 {
 
 	Gosu::Image apfel;
+	Gosu::Image Nike;
+	Gosu::Sample biss;
 	
 	//Schlange erstellen
 	Schlange s;
@@ -106,7 +126,7 @@ class GameWindow : public Gosu::Window
 public:
 	GameWindow()
 		: Window(805, 605)//, true) noch anhängen, wenn Vollbild benötigt wird.
-		, apfel("apfel.png"), text(10)
+		, apfel("apfel.png")
 	{
 		set_caption("Snake by Kevin-Marcel Schnell & Nils Hepp");
 		apfel_scale_height = 10.0 / apfel.height();
@@ -160,8 +180,31 @@ public:
 			apfel_scale_width, apfel_scale_height
 		);
 
-		text.draw_text(score_txt, 100, 20, 0, 5, 5);
-		text.draw_text(highscore_txt, 400, 20, 0, 5, 5);
+		/*
+		graphics().draw_quad(
+			(e.posess.x - 5), (e.posess.y + 5), Gosu::Color::GREEN,
+			(e.posess.x + 5), (e.posess.y + 5), Gosu::Color::GREEN,
+			(e.posess.x - 5), (e.posess.y - 5), Gosu::Color::GREEN,
+			(e.posess.x + 5), (e.posess.y - 5), Gosu::Color::GREEN,
+			0.0);
+		
+		/*graphics().draw_rect(
+			e.posess.x, e.posess.y, 10, 10, Gosu::Color::GREEN, 0
+		);*/
+
+
+		//https://www.libgosu.org/cpp/class_gosu_1_1_font.html#a86067397eacecc5fd88f447038a88b1d Damit Score und High-Score auf Bildschirm ausgeben
+		//Int muss noch zu String umgewandelt werden!!
+
+		void Gosu::Font::draw_text(score_txt,
+			10,
+			10,
+			0.0,
+			1,
+			1,
+			Color::WHITE,
+			AM_DEFAULT
+		)		const
 	}
 
 
@@ -183,6 +226,7 @@ public:
 
 		// Neues Essen erscheinen lassen + Schlange länger machen ++++++++++++++++++++ !Funktioniert noch nicht!
 		if ((s.pos.at(0).x == e.posess.x) && (s.pos.at(0).y == e.posess.y)) {
+			biss.play(1, 0.8) ;
 			s.geschwindigkeit--;
 			e.random_posess();
 			s.verlaengern();
