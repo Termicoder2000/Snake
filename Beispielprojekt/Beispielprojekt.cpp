@@ -324,7 +324,7 @@ public:
 		
 		// Spielfeldbegrenzung ++++++++++++++++++++++++++++++++
 		if (s.pos.at(0).x <= Spielbrettbegrenzung_x_min || s.pos.at(0).x > Spielbrettbegrenzung_x_max || s.pos.at(0).y <= Spielbrettbegrenzung_y_min || s.pos.at(0).y > Spielbrettbegrenzung_y_max) {
-		Window::close(); // Schlieﬂt nur, l‰sst nicht neu starten.
+			Window::close(); // Schlieﬂt nur, l‰sst nicht neu starten.
 		}
 
 		// Falls Schlange sich selbst essen will
@@ -335,7 +335,6 @@ public:
 				Window::close();
 			}
 		}
-
 	}
 };
 
