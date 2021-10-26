@@ -14,9 +14,10 @@ string score_txt = "Score: 0";
 string highscore_txt = "High-Score";
 int score = 0;
 int highscore;
+int Sonderobjekte_Zahl = 480;
 time_t zeitaktuell; 
-
 time_t zeit_aktualisieren();
+
 
 //Hilfs Struct für die Position der Schlange
 struct Position
@@ -89,6 +90,7 @@ public:
 // Sonderobjekte
 class Sonderobjekte: public Essen
 {
+public:
 
 };
 
@@ -97,7 +99,10 @@ class GameWindow : public Gosu::Window
 
 	Gosu::Image apfel;
 	Gosu::Image nike;
+	Gosu::Image blatt;
 	Gosu::Sample biss;
+	Gosu::Sample husten;
+	Gosu::Sample motorrad;
 	
 	//Schlange erstellen
 	Schlange s;
@@ -107,11 +112,14 @@ class GameWindow : public Gosu::Window
 
 	// Sonderobjekte erstellen
 	Sonderobjekte n;
+	Sonderobjekte bl;
 	
 	double apfel_scale_height = 1.0;
 	double apfel_scale_width = 1.0;
 	double nike_scale_height = 1.0;
 	double nike_scale_width = 1.0;
+	double blatt_scale_height = 1.0;
+	double blatt_scale_width = 1.0;
 
 	Gosu::Font text;
 
@@ -120,13 +128,18 @@ public:
 		: Window(805, 605)//, true) noch anhängen, wenn Vollbild benötigt wird.
 		, apfel("apfel.png"), text(10),
 		biss("biss.mp3"),
-		nike("nike.png")
+		husten("husten.mp3"),
+		motorrad("Motorrad.mp3"),
+		nike("nike.png"),
+		blatt("blatt.png")
 	{
 		set_caption("Snake by Kevin-Marcel Schnell & Nils Hepp");
 		apfel_scale_height = 10.0 / apfel.height();
 		apfel_scale_width = 10.0 / apfel.width();
 		nike_scale_height = 10.0 / nike.height();
 		nike_scale_width = 10.0 / nike.width();
+		blatt_scale_height = 10.0 / blatt.height();
+		blatt_scale_width = 10.0 / blatt.width();
 	}
 
 
@@ -181,6 +194,12 @@ public:
 			nike_scale_width, nike_scale_height
 		);
 
+		blatt.draw_rot(bl.posess.x, bl.posess.y, 0.0,
+			0.0, // Rotationswinkel in Grad
+			0.5, 0.5, // Position der "Mitte" relativ zu x, y
+			blatt_scale_width, blatt_scale_height
+		);
+
 		text.draw_text(score_txt, 100, 20, 0, 5, 5);
 		text.draw_text(highscore_txt, 400, 20, 0, 5, 5);
 	}
@@ -213,8 +232,12 @@ public:
 			score_txt = to_string(score);
 			score_txt = "Score: " + score_txt;
 
-			if (score % 5 == 0) { //*************************ÄÄÄÄÄÄÄÄÄÄÄNDEEEEEEEEEEEEEERN
+			if (score % 7 == 0) { //Nikes Spawnen lassen wenn score bei ca 7
 				n.random_posess();
+			}
+
+			if (score % 11 == 0){
+				bl.random_posess();
 			}
 
 			//ggfs. Highscore aktualisieren und in Textdatei schreiben
@@ -230,7 +253,7 @@ public:
 
 		// Nikes-Essen
 		if ((s.pos.at(0).x == n.posess.x) && (s.pos.at(0).y == n.posess.y)) {
-			biss.play(1, 0.8);
+			motorrad.play(1, 0.8);
 			n.posess.x = 1000;
 			n.posess.y = 1000;
 
@@ -251,15 +274,43 @@ public:
 			}
 
 			// Für 8 sek doppelt so schnell machen
-			s.geschwindigkeit = 2;
-			zeitaktuell = zeit_aktualisieren();
-			time_t i = zeit_aktualisieren();
+			s.geschwindigkeit =2;
+			Sonderobjekte_Zahl = 0;
+		}
 
-			for (i; i <= zeitaktuell+480; i++ ){
-				
+		// Blatt-Essen
+		if ((s.pos.at(0).x == bl.posess.x) && (s.pos.at(0).y == bl.posess.y)) {
+			husten.play(1, 0.8);
+			bl.posess.x = 1100;
+			bl.posess.y = 1100;
+
+			//Geschwindigkeit senken
+			s.geschwindigkeit = 8;
+			Sonderobjekte_Zahl = 0;
+
+
+			//Score aktuallisieren und in String speichern
+			score++;
+			score_txt = to_string(score);
+			score_txt = "Score: " + score_txt;
+
+			//ggfs. Highscore aktualisieren und in Textdatei schreiben
+			if (score > highscore)
+			{
+				highscore = score;
+				ofstream x("HighScore.txt");
+				x << highscore << endl;
+				highscore_txt = to_string(highscore);
+				highscore_txt = "High-Score: " + highscore_txt;
 			}
-			
-	
+		}
+
+
+		if (Sonderobjekte_Zahl <= 480) {
+			Sonderobjekte_Zahl++;
+		}
+		if (Sonderobjekte_Zahl == 480) {
+			s.geschwindigkeit = 5;
 		}
 
 		//Geschwindigkeitsregelung für die Schlange (nicht Linear!!)
