@@ -190,8 +190,6 @@ public:
 		}
 		else 
 		{
-			text.draw_text(highscore_txt, 250, 20, 0, 5, 5);
-
 			graphics().draw_quad(
 				(800 / 3), (600 / 3), Gosu::Color::GREEN,
 				((800 / 3) * 2), (600 / 3), Gosu::Color::GREEN,
@@ -206,8 +204,9 @@ public:
 
 			text.draw_text("Play", 310, 270, 0, 10, 10);
 			text.draw_text("Close", 290, 470, 0, 10, 10);
+			text.draw_text(highscore_txt, 250, 120, 0, 5, 5);
+			text.draw_text("Snake", 250, 20, 0, 10, 10);
 		}
-
 	}
 
 
@@ -391,7 +390,6 @@ void Schlange::move()
 
 }
 
-
 void Schlange::verlaengern()
 {
 	//Verhindern dass die Schlange während der Methode gezeichnet wird
@@ -424,8 +422,6 @@ void Schlange::verlaengern()
 	this->draw_freigabe = true;
 }
 
-
-//+++++++++++++++++++++++++++++++++++++++++++++++++Für Essen++++++++++++++++
 
 int Essen::random_x()
 {
