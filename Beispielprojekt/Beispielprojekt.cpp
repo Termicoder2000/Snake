@@ -5,7 +5,6 @@
 #include <iostream>
 #include <fstream>
 #include <random>
-//Wozu time ?
 #include <time.h>
 
 using namespace std;
@@ -68,8 +67,6 @@ public:
 	}
 };
 
-//++++++++++++++++++++++++++++++++++++++++NEU++++++++++++++++++++++++++++++++++++
-// Ich habe Position in public gemacht weil ich es einfacher fand - ist natürlich nicht optimal
 class Essen
 {
 	
@@ -122,7 +119,7 @@ class GameWindow : public Gosu::Window
 
 public:
 	GameWindow()
-		: Window(805, 605)//, true) //noch anhängen, wenn Vollbild benötigt wird.
+		: Window(805, 605, true) //noch anhängen, wenn Vollbild benötigt wird.
 		, apfel("apfel.png"), text(10),
 		biss("biss.mp3"),
 		nike("nike.png")
@@ -201,7 +198,14 @@ public:
 				((800 / 3) * 2), ((600 / 3) * 2), Gosu::Color::GREEN,
 				(800 / 3), ((600 / 3) * 2), Gosu::Color::GREEN, 0.0);
 
-			text.draw_text("Play", 320, 270, 0, 10, 10);
+			graphics().draw_quad(
+				(800 / 3), ((600 / 3) + 200), Gosu::Color::RED,
+				((800 / 3) * 2), ((600 / 3) + 200), Gosu::Color::RED,
+				((800 / 3) * 2), (((600 / 3) * 2) + 200), Gosu::Color::RED,
+				(800 / 3), (((600 / 3) * 2) + 200), Gosu::Color::RED, 0.0);
+
+			text.draw_text("Play", 310, 270, 0, 10, 10);
+			text.draw_text("Close", 290, 470, 0, 10, 10);
 		}
 
 	}
@@ -311,6 +315,7 @@ public:
 		{
 			mx = input().mouse_x();
 			my = input().mouse_y();
+			//Play
 			if (input().down(Gosu::MS_LEFT) && (mx > (800 / 3)) && (mx < ((800 * 2) / 3)) && (my > (600 / 3)) && (my < (600 * 2 / 3)))
 			{
 				s.pos.clear();
@@ -326,6 +331,11 @@ public:
 					p.x = p.x + 20;
 				}
 				spielen = true;
+			}
+			//Close
+			if (input().down(Gosu::MS_LEFT) && (mx > (800 / 3)) && (mx < ((800 * 2) / 3)) && (my > ((600 / 3)) + 200) && (my < ((600 * 2 / 3) + 200)))
+			{
+				Window::close();
 			}
 		}
 	}
