@@ -14,7 +14,9 @@ string score_txt = "Score: 0";
 string highscore_txt = "High-Score";
 int score = 0;
 int highscore;
+time_t zeitaktuell; 
 
+time_t zeit_aktualisieren();
 
 //Hilfs Struct für die Position der Schlange
 struct Position
@@ -80,14 +82,14 @@ public:
 	{
 		//Startwert festlegen
 		random_posess();
-
 	}
 };
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 // Sonderobjekte
-class Sonderobjekte : public Essen
+class Sonderobjekte: public Essen
 {
+
 };
 
 class GameWindow : public Gosu::Window
@@ -102,6 +104,9 @@ class GameWindow : public Gosu::Window
 
 	// Essen erstellen
 	Essen e;
+
+	// Sonderobjekte erstellen
+	Sonderobjekte n;
 	
 	double apfel_scale_height = 1.0;
 	double apfel_scale_width = 1.0;
@@ -170,6 +175,12 @@ public:
 			apfel_scale_width, apfel_scale_height
 		);
 
+		nike.draw_rot(n.posess.x, n.posess.y, 0.0,
+			0.0, // Rotationswinkel in Grad
+			0.5, 0.5, // Position der "Mitte" relativ zu x, y
+			nike_scale_width, nike_scale_height
+		);
+
 		text.draw_text(score_txt, 100, 20, 0, 5, 5);
 		text.draw_text(highscore_txt, 400, 20, 0, 5, 5);
 	}
@@ -191,7 +202,7 @@ public:
 			s.richtung = "down";
 		}
 
-		// Neues Essen erscheinen lassen + Schlange länger machen ++++++++++++++++++++ !Funktioniert noch nicht!
+		// Neues Essen erscheinen lassen + Schlange länger machen ++++++++++++++++++++
 		if ((s.pos.at(0).x == e.posess.x) && (s.pos.at(0).y == e.posess.y)) {
 			biss.play(1, 0.8) ;
 			e.random_posess();
@@ -202,12 +213,11 @@ public:
 			score_txt = to_string(score);
 			score_txt = "Score: " + score_txt;
 
-			if (score % 3 == 0) { //*************************ÄÄÄÄÄÄÄÄÄÄÄNDEEEEEEEEEEEEEERN
-				Sonderobjekte nike;
-				nike.random_posess();
+			if (score % 5 == 0) { //*************************ÄÄÄÄÄÄÄÄÄÄÄNDEEEEEEEEEEEEEERN
+				n.random_posess();
 			}
 
-			//ggfs. Highscore aktuallisieren und in Tetdatei schreiben
+			//ggfs. Highscore aktualisieren und in Textdatei schreiben
 			if (score > highscore)
 			{
 				highscore = score;
@@ -216,6 +226,40 @@ public:
 				highscore_txt = to_string(highscore);
 				highscore_txt = "High-Score: " + highscore_txt;
 			}
+		}
+
+		// Nikes-Essen
+		if ((s.pos.at(0).x == n.posess.x) && (s.pos.at(0).y == n.posess.y)) {
+			biss.play(1, 0.8);
+			n.posess.x = 1000;
+			n.posess.y = 1000;
+
+
+			//Score aktuallisieren und in String speichern
+			score = score +2;
+			score_txt = to_string(score);
+			score_txt = "Score: " + score_txt;
+
+			//ggfs. Highscore aktualisieren und in Textdatei schreiben
+			if (score > highscore)
+			{
+				highscore = score;
+				ofstream x("HighScore.txt");
+				x << highscore << endl;
+				highscore_txt = to_string(highscore);
+				highscore_txt = "High-Score: " + highscore_txt;
+			}
+
+			// Für 8 sek doppelt so schnell machen
+			s.geschwindigkeit = 2;
+			zeitaktuell = zeit_aktualisieren();
+			time_t i = zeit_aktualisieren();
+
+			for (i; i <= zeitaktuell+480; i++ ){
+				
+			}
+			
+	
 		}
 
 		//Geschwindigkeitsregelung für die Schlange (nicht Linear!!)
@@ -343,5 +387,12 @@ int Essen::random_y()
 void Essen::random_posess()
 {
 	this->posess.x = (10 * random_x() + 10);
-	this->posess.y = (10 * random_y() + 100);
+	this->posess.y = (10 * random_y() + 110);
+}
+
+// Zeit aktualisieren
+
+time_t zeit_aktualisieren(){
+	time_t z = time(0);
+	return z;
 }
