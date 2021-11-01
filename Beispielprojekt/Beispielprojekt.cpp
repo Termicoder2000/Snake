@@ -10,6 +10,11 @@
 
 using namespace std;
 
+bool spielen = false;
+
+double mx;
+double my;
+
 string score_txt = "Score: 0";
 string highscore_txt = "High-Score";
 int score = 0;
@@ -59,7 +64,7 @@ public:
 		for (int i = 0; i < laenge; i++)
 		{
 			this->pos.push_back(p);
-			p.x = p.x + 10;
+			p.x = p.x + 20;
 		}
 	}
 };
@@ -125,7 +130,7 @@ class GameWindow : public Gosu::Window
 
 public:
 	GameWindow()
-		: Window(805, 605)//, true) noch anhängen, wenn Vollbild benötigt wird.
+		: Window(805, 605)//, true) //noch anhängen, wenn Vollbild benötigt wird.
 		, apfel("apfel.png"), text(10),
 		biss("biss.mp3"),
 		husten("husten.mp3"),
@@ -143,56 +148,58 @@ public:
 	}
 
 
-	int Spielbrettbegrenzung_x_max = 795;
-	int Spielbrettbegrenzung_x_min = 5;
-	int Spielbrettbegrenzung_y_max = 595;
-	int Spielbrettbegrenzung_y_min = 105;
+	int Spielbrettbegrenzung_x_max = 790;
+	int Spielbrettbegrenzung_x_min = 10;
+	int Spielbrettbegrenzung_y_max = 590;
+	int Spielbrettbegrenzung_y_min = 110;
 
 
 	void draw() override
 	{
-		//Schlange zeichnen 
-		if (s.draw_freigabe)
+		//Spielen oder Menu?
+		if (spielen) 
 		{
-			for (size_t i = 0; i < s.pos.size(); i++)
+			//Schlange zeichnen 
+			if (s.draw_freigabe)
 			{
-				if (i == 0)
+				for (size_t i = 0; i < s.pos.size(); i++)
 				{
-					graphics().draw_quad(
-						(s.pos.at(i).x - 5), (s.pos.at(i).y + 5), Gosu::Color::RED,
-						(s.pos.at(i).x + 5), (s.pos.at(i).y + 5), Gosu::Color::RED,
-						(s.pos.at(i).x - 5), (s.pos.at(i).y - 5), Gosu::Color::RED,
-						(s.pos.at(i).x + 5), (s.pos.at(i).y - 5), Gosu::Color::RED,
-						0.0);
-				}
-				else
-				{
-					graphics().draw_quad(
-						(s.pos.at(i).x - 5), (s.pos.at(i).y + 5), Gosu::Color::GRAY,
-						(s.pos.at(i).x + 5), (s.pos.at(i).y + 5), Gosu::Color::GRAY,
-						(s.pos.at(i).x - 5), (s.pos.at(i).y - 5), Gosu::Color::GRAY,
-						(s.pos.at(i).x + 5), (s.pos.at(i).y - 5), Gosu::Color::GRAY,
-						0.0);
+					if (i == 0)
+					{
+						graphics().draw_quad(
+							(s.pos.at(i).x - 10), (s.pos.at(i).y + 10), Gosu::Color::RED,
+							(s.pos.at(i).x + 10), (s.pos.at(i).y + 10), Gosu::Color::RED,
+							(s.pos.at(i).x - 10), (s.pos.at(i).y - 10), Gosu::Color::RED,
+							(s.pos.at(i).x + 10), (s.pos.at(i).y - 10), Gosu::Color::RED,
+							0.0);
+					}
+					else
+					{
+						graphics().draw_quad(
+							(s.pos.at(i).x - 10), (s.pos.at(i).y + 10), Gosu::Color::GRAY,
+							(s.pos.at(i).x + 10), (s.pos.at(i).y + 10), Gosu::Color::GRAY,
+							(s.pos.at(i).x - 10), (s.pos.at(i).y - 10), Gosu::Color::GRAY,
+							(s.pos.at(i).x + 10), (s.pos.at(i).y - 10), Gosu::Color::GRAY,
+							0.0);
+					}
 				}
 			}
-		}
+			graphics().draw_line(Spielbrettbegrenzung_x_max, Spielbrettbegrenzung_y_max, Gosu::Color::WHITE, Spielbrettbegrenzung_x_max, Spielbrettbegrenzung_y_min, Gosu::Color::WHITE, 0.0);
+			graphics().draw_line(Spielbrettbegrenzung_x_max, Spielbrettbegrenzung_y_max, Gosu::Color::WHITE, Spielbrettbegrenzung_x_min, Spielbrettbegrenzung_y_max, Gosu::Color::WHITE, 0.0);
+			graphics().draw_line(Spielbrettbegrenzung_x_min, Spielbrettbegrenzung_y_min, Gosu::Color::WHITE, Spielbrettbegrenzung_x_max, Spielbrettbegrenzung_y_min, Gosu::Color::WHITE, 0.0);
+			graphics().draw_line(Spielbrettbegrenzung_x_min, Spielbrettbegrenzung_y_min, Gosu::Color::WHITE, Spielbrettbegrenzung_x_min, Spielbrettbegrenzung_y_max, Gosu::Color::WHITE, 0.0);
+			// Essen zeichnen ++++++++++++++++++++++++++++++++++++++++++++++
+			apfel.draw_rot(e.posess.x, e.posess.y, 0.0,
+				0.0, // Rotationswinkel in Grad
+				0.5, 0.5, // Position der "Mitte" relativ zu x, y
+				apfel_scale_width, apfel_scale_height
+			);
 
-		graphics().draw_line(Spielbrettbegrenzung_x_max, Spielbrettbegrenzung_y_max, Gosu::Color::WHITE, Spielbrettbegrenzung_x_max, Spielbrettbegrenzung_y_min, Gosu::Color::WHITE, 0.0);
-		graphics().draw_line(Spielbrettbegrenzung_x_max, Spielbrettbegrenzung_y_max, Gosu::Color::WHITE, Spielbrettbegrenzung_x_min, Spielbrettbegrenzung_y_max, Gosu::Color::WHITE, 0.0);
-		graphics().draw_line(Spielbrettbegrenzung_x_min, Spielbrettbegrenzung_y_min, Gosu::Color::WHITE, Spielbrettbegrenzung_x_max, Spielbrettbegrenzung_y_min, Gosu::Color::WHITE, 0.0);
-		graphics().draw_line(Spielbrettbegrenzung_x_min, Spielbrettbegrenzung_y_min, Gosu::Color::WHITE, Spielbrettbegrenzung_x_min, Spielbrettbegrenzung_y_max, Gosu::Color::WHITE, 0.0);
-		// Essen zeichnen ++++++++++++++++++++++++++++++++++++++++++++++
-		apfel.draw_rot(e.posess.x, e.posess.y, 0.0,
-			0.0, // Rotationswinkel in Grad
-			0.5, 0.5, // Position der "Mitte" relativ zu x, y
-			apfel_scale_width, apfel_scale_height
-		);
-
-		nike.draw_rot(n.posess.x, n.posess.y, 0.0,
-			0.0, // Rotationswinkel in Grad
-			0.5, 0.5, // Position der "Mitte" relativ zu x, y
-			nike_scale_width, nike_scale_height
-		);
+			nike.draw_rot(n.posess.x, n.posess.y, 0.0,
+				0.0, // Rotationswinkel in Grad
+				0.5, 0.5, // Position der "Mitte" relativ zu x, y
+				nike_scale_width, nike_scale_height
+			);
 
 		blatt.draw_rot(bl.posess.x, bl.posess.y, 0.0,
 			0.0, // Rotationswinkel in Grad
@@ -204,33 +211,48 @@ public:
 		text.draw_text(highscore_txt, 400, 20, 0, 5, 5);
 	}
 
+			graphics().draw_quad(
+				(800 / 3), (600 / 3), Gosu::Color::GREEN,
+				((800 / 3) * 2), (600 / 3), Gosu::Color::GREEN,
+				((800 / 3) * 2), ((600 / 3) * 2), Gosu::Color::GREEN,
+				(800 / 3), ((600 / 3) * 2), Gosu::Color::GREEN, 0.0);
+
+			text.draw_text("Play", 320, 270, 0, 10, 10);
+		}
+
+	}
+
 
 	void update() override
 	{
-		//Einlesen der Bedientasten
-		if ((Gosu::Input::down(Gosu::KB_LEFT) || Gosu::Input::down(Gosu::GP_LEFT)) && s.richtung != "right") {
-			s.richtung = "left";
-		}
-		if ((Gosu::Input::down(Gosu::KB_RIGHT) || Gosu::Input::down(Gosu::GP_RIGHT)) && s.richtung != "left") {
-			s.richtung = "right";
-		}
-		if ((Gosu::Input::down(Gosu::KB_UP) || Gosu::Input::down(Gosu::GP_LEFT)) && s.richtung != "down") {
-			s.richtung = "up";
-		}
-		if ((Gosu::Input::down(Gosu::KB_DOWN) || Gosu::Input::down(Gosu::GP_RIGHT)) && s.richtung != "up") {
-			s.richtung = "down";
-		}
+		if (spielen)
+		{
+			if (s.draw_freigabe)
+			{
+				//Einlesen der Bedientasten
+				if ((Gosu::Input::down(Gosu::KB_LEFT) || Gosu::Input::down(Gosu::GP_LEFT)) && s.richtung != "right") {
+					s.richtung = "left";
+				}
+				if ((Gosu::Input::down(Gosu::KB_RIGHT) || Gosu::Input::down(Gosu::GP_RIGHT)) && s.richtung != "left") {
+					s.richtung = "right";
+				}
+				if ((Gosu::Input::down(Gosu::KB_UP) || Gosu::Input::down(Gosu::GP_LEFT)) && s.richtung != "down") {
+					s.richtung = "up";
+				}
+				if ((Gosu::Input::down(Gosu::KB_DOWN) || Gosu::Input::down(Gosu::GP_RIGHT)) && s.richtung != "up") {
+					s.richtung = "down";
+				}
 
-		// Neues Essen erscheinen lassen + Schlange länger machen ++++++++++++++++++++
-		if ((s.pos.at(0).x == e.posess.x) && (s.pos.at(0).y == e.posess.y)) {
-			biss.play(1, 0.8) ;
-			e.random_posess();
-			s.verlaengern();
-			
-			//Score aktuallisieren und in String speichern
-			score++;
-			score_txt = to_string(score);
-			score_txt = "Score: " + score_txt;
+				// Neues Essen erscheinen lassen + Schlange länger machen ++++++++++++++++++++
+				if ((s.pos.at(0).x == e.posess.x) && (s.pos.at(0).y == e.posess.y)) {
+					biss.play(1, 0.8);
+					e.random_posess();
+					s.verlaengern();
+
+					//Score aktuallisieren und in String speichern
+					score++;
+					score_txt = to_string(score);
+					score_txt = "Score: " + score_txt;
 
 			if (score % 7 == 0) { //Nikes Spawnen lassen wenn score bei ca 7
 				n.random_posess();
@@ -258,81 +280,77 @@ public:
 			n.posess.y = 1000;
 
 
-			//Score aktuallisieren und in String speichern
-			score = score +2;
-			score_txt = to_string(score);
-			score_txt = "Score: " + score_txt;
+					//Score aktuallisieren und in String speichern
+					score = score + 2;
+					score_txt = to_string(score);
+					score_txt = "Score: " + score_txt;
 
-			//ggfs. Highscore aktualisieren und in Textdatei schreiben
-			if (score > highscore)
-			{
-				highscore = score;
-				ofstream x("HighScore.txt");
-				x << highscore << endl;
-				highscore_txt = to_string(highscore);
-				highscore_txt = "High-Score: " + highscore_txt;
-			}
+					//ggfs. Highscore aktualisieren und in Textdatei schreiben
+					if (score > highscore)
+					{
+						highscore = score;
+						ofstream x("HighScore.txt");
+						x << highscore << endl;
+						highscore_txt = to_string(highscore);
+						highscore_txt = "High-Score: " + highscore_txt;
+					}
 
 			// Für 8 sek doppelt so schnell machen
-			s.geschwindigkeit =2;
-			Sonderobjekte_Zahl = 0;
-		}
+			s.geschwindigkeit = 2;
+			zeitaktuell = zeit_aktualisieren();
+			time_t i = zeit_aktualisieren();
 
-		// Blatt-Essen
-		if ((s.pos.at(0).x == bl.posess.x) && (s.pos.at(0).y == bl.posess.y)) {
-			husten.play(1, 0.8);
-			bl.posess.x = 1100;
-			bl.posess.y = 1100;
-
-			//Geschwindigkeit senken
-			s.geschwindigkeit = 8;
-			Sonderobjekte_Zahl = 0;
-
-
-			//Score aktuallisieren und in String speichern
-			score++;
-			score_txt = to_string(score);
-			score_txt = "Score: " + score_txt;
-
-			//ggfs. Highscore aktualisieren und in Textdatei schreiben
-			if (score > highscore)
-			{
-				highscore = score;
-				ofstream x("HighScore.txt");
-				x << highscore << endl;
-				highscore_txt = to_string(highscore);
-				highscore_txt = "High-Score: " + highscore_txt;
+			for (i; i <= zeitaktuell+480; i++ ){
+				
 			}
+			
+	
 		}
 
+				//Geschwindigkeitsregelung für die Schlange (nicht Linear!!)
+				if (bewegung_verlangsamen > s.geschwindigkeit)
+				{
+					s.move();
+					bewegung_verlangsamen = 0;
+				}
+				bewegung_verlangsamen++;
 
-		if (Sonderobjekte_Zahl <= 480) {
-			Sonderobjekte_Zahl++;
-		}
-		if (Sonderobjekte_Zahl == 480) {
-			s.geschwindigkeit = 5;
-		}
 
-		//Geschwindigkeitsregelung für die Schlange (nicht Linear!!)
-		if (bewegung_verlangsamen > s.geschwindigkeit)
+				// Spielfeldbegrenzung ++++++++++++++++++++++++++++++++
+				if (s.pos.at(0).x <= Spielbrettbegrenzung_x_min || s.pos.at(0).x > Spielbrettbegrenzung_x_max || s.pos.at(0).y <= Spielbrettbegrenzung_y_min || s.pos.at(0).y > Spielbrettbegrenzung_y_max) {
+					spielen = false; // Schließt nur, lässt nicht neu starten.
+				}
+
+				// Falls Schlange sich selbst essen will
+				for (size_t i = 1; i < s.pos.size(); i++)
+				{
+					if ((s.pos.at(0).x == s.pos.at(i).x) && (s.pos.at(0).y == s.pos.at(i).y))
+					{
+						spielen = false;
+					}
+				}
+			}
+
+		}
+		else 
 		{
-			s.move();
-			bewegung_verlangsamen = 0;
-		}
-		bewegung_verlangsamen++;
-
-		
-		// Spielfeldbegrenzung ++++++++++++++++++++++++++++++++
-		if (s.pos.at(0).x <= Spielbrettbegrenzung_x_min || s.pos.at(0).x > Spielbrettbegrenzung_x_max || s.pos.at(0).y <= Spielbrettbegrenzung_y_min || s.pos.at(0).y > Spielbrettbegrenzung_y_max) {
-			Window::close(); // Schließt nur, lässt nicht neu starten.
-		}
-
-		// Falls Schlange sich selbst essen will
-		for (size_t i = 1; i < s.pos.size(); i++)
-		{
-			if ((s.pos.at(0).x == s.pos.at(i).x) && (s.pos.at(0).y == s.pos.at(i).y))
+			mx = input().mouse_x();
+			my = input().mouse_y();
+			if (input().down(Gosu::MS_LEFT) && (mx > (800 / 3)) && (mx < ((800 * 2) / 3)) && (my > (600 / 3)) && (my < (600 * 2 / 3)))
 			{
-				Window::close();
+				s.pos.clear();
+				Position p = { 400,300 };
+				s.geschwindigkeit = 5;
+				score = 0;
+				score_txt = to_string(score);
+				score_txt = "Score: " + score_txt;
+				s.richtung = "left";
+				for (int i = 0; i < 10; i++)
+				{
+					this->s.pos.push_back(p);
+					p.x = p.x + 20;
+				}
+				spielen = true;
 			}
 		}
 	}
@@ -368,22 +386,22 @@ void Schlange::move()
 	//Links
 	if (this->richtung == "left")
 	{
-		this->pos.at(0).x = this->pos.at(0).x - 10;
+		this->pos.at(0).x = this->pos.at(0).x - 20;
 	}
 	//Rechts
 	if (this->richtung == "right")
 	{
-		this->pos.at(0).x = this->pos.at(0).x + 10;
+		this->pos.at(0).x = this->pos.at(0).x + 20;
 	}
 	//Hoch
 	if (this->richtung == "up")
 	{
-		this->pos.at(0).y = this->pos.at(0).y - 10;
+		this->pos.at(0).y = this->pos.at(0).y - 20;
 	}
 	//Runter
 	if (this->richtung == "down")
 	{
-		this->pos.at(0).y = this->pos.at(0).y + 10;
+		this->pos.at(0).y = this->pos.at(0).y + 20;
 	}
 
 }
@@ -400,21 +418,21 @@ void Schlange::verlaengern()
 	//Neu angehängtes Stück verschieben in X (damit die letzten Stücke nicht übereinander liegen)
 	if (this->pos.at(this->pos.size() - 1).x > this->pos.at(this->pos.size() - 2).x)
 	{
-		this->pos.at(this->pos.size() - 1).x = this->pos.at(this->pos.size() - 1).x + 10;
+		this->pos.at(this->pos.size() - 1).x = this->pos.at(this->pos.size() - 1).x + 20;
 	}
 	else
 	{
-		this->pos.at(this->pos.size() - 1).x = this->pos.at(this->pos.size() - 1).x + 10;
+		this->pos.at(this->pos.size() - 1).x = this->pos.at(this->pos.size() - 1).x + 20;
 	}
 
 	//Neu angehängtes Stück verschieben in Y (damit die letzten Stücke nicht übereinander liegen)
 	if (this->pos.at(this->pos.size() - 1).y > this->pos.at(this->pos.size() - 2).y)
 	{
-		this->pos.at(this->pos.size() - 1).y = this->pos.at(this->pos.size() - 1).y + 10;
+		this->pos.at(this->pos.size() - 1).y = this->pos.at(this->pos.size() - 1).y + 20;
 	}
 	else
 	{
-		this->pos.at(this->pos.size() - 1).y = this->pos.at(this->pos.size() - 1).y + 10;
+		this->pos.at(this->pos.size() - 1).y = this->pos.at(this->pos.size() - 1).y + 20;
 	}
 
 	//Zeichnen der Schlange wieder freigeben
@@ -426,18 +444,18 @@ void Schlange::verlaengern()
 
 int Essen::random_x()
 {
-	return rand() % 80;
+	return rand() % 39;
 }
 
 int Essen::random_y()
 {
-	return rand() % 49;
+	return rand() % 23;
 }
 
 void Essen::random_posess()
 {
-	this->posess.x = (10 * random_x() + 10);
-	this->posess.y = (10 * random_y() + 110);
+	this->posess.x = (20 * random_x() + 20);
+	this->posess.y = (20 * random_y() + 120);
 }
 
 // Zeit aktualisieren
