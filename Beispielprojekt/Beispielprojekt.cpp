@@ -5,7 +5,6 @@
 #include <iostream>
 #include <fstream>
 #include <random>
-//Wozu time ?
 #include <time.h>
 
 using namespace std;
@@ -69,8 +68,6 @@ public:
 	}
 };
 
-//++++++++++++++++++++++++++++++++++++++++NEU++++++++++++++++++++++++++++++++++++
-// Ich habe Position in public gemacht weil ich es einfacher fand - ist natürlich nicht optimal
 class Essen
 {
 	
@@ -130,7 +127,7 @@ class GameWindow : public Gosu::Window
 
 public:
 	GameWindow()
-		: Window(805, 605)//, true) //noch anhängen, wenn Vollbild benötigt wird.
+		: Window(805, 605, true) //noch anhängen, wenn Vollbild benötigt wird.
 		, apfel("apfel.png"), text(10),
 		biss("biss.mp3"),
 		husten("husten.mp3"),
@@ -201,25 +198,28 @@ public:
 				nike_scale_width, nike_scale_height
 			);
 
-		blatt.draw_rot(bl.posess.x, bl.posess.y, 0.0,
-			0.0, // Rotationswinkel in Grad
-			0.5, 0.5, // Position der "Mitte" relativ zu x, y
-			blatt_scale_width, blatt_scale_height
-		);
-
-		text.draw_text(score_txt, 100, 20, 0, 5, 5);
-		text.draw_text(highscore_txt, 400, 20, 0, 5, 5);
-	}
-
+			text.draw_text(score_txt, 100, 20, 0, 5, 5);
+			text.draw_text(highscore_txt, 400, 20, 0, 5, 5);
+		}
+		else 
+		{
 			graphics().draw_quad(
 				(800 / 3), (600 / 3), Gosu::Color::GREEN,
 				((800 / 3) * 2), (600 / 3), Gosu::Color::GREEN,
 				((800 / 3) * 2), ((600 / 3) * 2), Gosu::Color::GREEN,
 				(800 / 3), ((600 / 3) * 2), Gosu::Color::GREEN, 0.0);
 
-			text.draw_text("Play", 320, 270, 0, 10, 10);
-		}
+			graphics().draw_quad(
+				(800 / 3), ((600 / 3) + 200), Gosu::Color::RED,
+				((800 / 3) * 2), ((600 / 3) + 200), Gosu::Color::RED,
+				((800 / 3) * 2), (((600 / 3) * 2) + 200), Gosu::Color::RED,
+				(800 / 3), (((600 / 3) * 2) + 200), Gosu::Color::RED, 0.0);
 
+			text.draw_text("Play", 310, 270, 0, 10, 10);
+			text.draw_text("Close", 290, 470, 0, 10, 10);
+			text.draw_text(highscore_txt, 250, 120, 0, 5, 5);
+			text.draw_text("Snake", 250, 20, 0, 10, 10);
+		}
 	}
 
 
@@ -295,17 +295,11 @@ public:
 						highscore_txt = "High-Score: " + highscore_txt;
 					}
 
-			// Für 8 sek doppelt so schnell machen
-			s.geschwindigkeit = 2;
-			zeitaktuell = zeit_aktualisieren();
-			time_t i = zeit_aktualisieren();
-
-			for (i; i <= zeitaktuell+480; i++ ){
-				
-			}
-			
-	
-		}
+					// Für 8 sek doppelt so schnell machen
+					s.geschwindigkeit = 2;
+					zeitaktuell = zeit_aktualisieren();
+					time_t i = zeit_aktualisieren();
+				}
 
 				//Geschwindigkeitsregelung für die Schlange (nicht Linear!!)
 				if (bewegung_verlangsamen > s.geschwindigkeit)
@@ -336,6 +330,7 @@ public:
 		{
 			mx = input().mouse_x();
 			my = input().mouse_y();
+			//Play
 			if (input().down(Gosu::MS_LEFT) && (mx > (800 / 3)) && (mx < ((800 * 2) / 3)) && (my > (600 / 3)) && (my < (600 * 2 / 3)))
 			{
 				s.pos.clear();
@@ -351,6 +346,11 @@ public:
 					p.x = p.x + 20;
 				}
 				spielen = true;
+			}
+			//Close
+			if (input().down(Gosu::MS_LEFT) && (mx > (800 / 3)) && (mx < ((800 * 2) / 3)) && (my > ((600 / 3)) + 200) && (my < ((600 * 2 / 3) + 200)))
+			{
+				Window::close();
 			}
 		}
 	}
@@ -406,7 +406,6 @@ void Schlange::move()
 
 }
 
-
 void Schlange::verlaengern()
 {
 	//Verhindern dass die Schlange während der Methode gezeichnet wird
@@ -439,8 +438,6 @@ void Schlange::verlaengern()
 	this->draw_freigabe = true;
 }
 
-
-//+++++++++++++++++++++++++++++++++++++++++++++++++Für Essen++++++++++++++++
 
 int Essen::random_x()
 {
