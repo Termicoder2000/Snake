@@ -33,6 +33,9 @@ public:
 
 int bewegung_verlangsamen = 0;
 
+
+//++++++++++++++++++++++++++Klassen
+
 class Schlange
 {
 public:
@@ -87,9 +90,7 @@ public:
 		random_posess();
 	}
 };
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-// Sonderobjekte
 class Sonderobjekte: public Essen
 {
 public:
@@ -127,7 +128,7 @@ class GameWindow : public Gosu::Window
 
 public:
 	GameWindow()
-		: Window(805, 605, true) //noch anhängen, wenn Vollbild benötigt wird.
+		: Window(805, 605, true) 
 		, apfel("apfel.png"), text(10),
 		biss("biss.mp3"),
 		husten("husten.mp3"),
@@ -136,12 +137,12 @@ public:
 		blatt("blatt.png")
 	{
 		set_caption("Snake by Kevin-Marcel Schnell & Nils Hepp");
-		apfel_scale_height = 10.0 / apfel.height();
-		apfel_scale_width = 10.0 / apfel.width();
-		nike_scale_height = 10.0 / nike.height();
-		nike_scale_width = 10.0 / nike.width();
-		blatt_scale_height = 10.0 / blatt.height();
-		blatt_scale_width = 10.0 / blatt.width();
+		apfel_scale_height = 20.0 / apfel.height();
+		apfel_scale_width = 20.0 / apfel.width();
+		nike_scale_height = 20.0 / nike.height();
+		nike_scale_width = 20.0 / nike.width();
+		blatt_scale_height = 20.0 / blatt.height();
+		blatt_scale_width = 20.0 / blatt.width();
 	}
 
 
@@ -196,6 +197,12 @@ public:
 				0.0, // Rotationswinkel in Grad
 				0.5, 0.5, // Position der "Mitte" relativ zu x, y
 				nike_scale_width, nike_scale_height
+			);
+
+			blatt.draw_rot(bl.posess.x, bl.posess.y, 0.0,
+				0.0, // Rotationswinkel in Grad
+				0.5, 0.5, // Position der "Mitte" relativ zu x, y
+				blatt_scale_width, blatt_scale_height
 			);
 
 			text.draw_text(score_txt, 100, 20, 0, 5, 5);
@@ -254,31 +261,31 @@ public:
 					score_txt = to_string(score);
 					score_txt = "Score: " + score_txt;
 
-			if (score % 7 == 0) { //Nikes Spawnen lassen wenn score bei ca 7
-				n.random_posess();
-			}
+					if (score % 7 == 0) { //Nikes Spawnen lassen wenn score bei ca 7
+						n.random_posess();
+					}
 
-			if (score % 11 == 0){
-				bl.random_posess();
-			}
+					if (score % 11 == 0){
+						bl.random_posess();
+					}
 
-			//ggfs. Highscore aktualisieren und in Textdatei schreiben
-			if (score > highscore)
-			{
-				highscore = score;
-				ofstream x("HighScore.txt");
-				x << highscore << endl;
-				highscore_txt = to_string(highscore);
-				highscore_txt = "High-Score: " + highscore_txt;
-			}
-		}
+					//ggfs. Highscore aktualisieren und in Textdatei schreiben
+					if (score > highscore)
+					{
+						highscore = score;
+						ofstream x("HighScore.txt");
+						x << highscore << endl;
+						highscore_txt = to_string(highscore);
+						highscore_txt = "High-Score: " + highscore_txt;
+					}
+				}
 
-		// Nikes-Essen
-		if ((s.pos.at(0).x == n.posess.x) && (s.pos.at(0).y == n.posess.y)) {
-			motorrad.play(1, 0.8);
-			n.posess.x = 1000;
-			n.posess.y = 1000;
-
+				// Nikes-Essen
+				if ((s.pos.at(0).x == n.posess.x) && (s.pos.at(0).y == n.posess.y)) {
+					motorrad.play(1, 1);
+					n.posess.x = 1000;
+					n.posess.y = 1000;
+					s.verlaengern();
 
 					//Score aktuallisieren und in String speichern
 					score = score + 2;
@@ -295,11 +302,46 @@ public:
 						highscore_txt = "High-Score: " + highscore_txt;
 					}
 
-					// Für 8 sek doppelt so schnell machen
-					s.geschwindigkeit = 2;
-					zeitaktuell = zeit_aktualisieren();
-					time_t i = zeit_aktualisieren();
+					// Für 8 sek schneller machen
+					s.geschwindigkeit = 3;
+					Sonderobjekte_Zahl = 0;
 				}
+
+				// Blatt-Essen
+				if ((s.pos.at(0).x == bl.posess.x) && (s.pos.at(0).y == bl.posess.y)) {
+					husten.play(1, 1);
+					bl.posess.x = 1100;
+					bl.posess.y = 1100;
+					s.geschwindigkeit = 2;
+					s.verlaengern();
+
+					//Geschwindigkeit senken
+					s.geschwindigkeit = 8;
+					Sonderobjekte_Zahl = 0;
+
+					//Score aktuallisieren und in String speichern
+					score++;
+					score_txt = to_string(score);
+					score_txt = "Score: " + score_txt;
+
+					//ggfs. Highscore aktualisieren und in Textdatei schreiben
+					if (score > highscore)
+					{
+						highscore = score;
+						ofstream x("HighScore.txt");
+						x << highscore << endl;
+						highscore_txt = to_string(highscore);
+						highscore_txt = "High-Score: " + highscore_txt;
+					}
+
+				}
+				if (Sonderobjekte_Zahl <= 480) {
+					Sonderobjekte_Zahl++;
+				}
+				if (Sonderobjekte_Zahl == 480) {
+					s.geschwindigkeit = 5;
+				}
+
 
 				//Geschwindigkeitsregelung für die Schlange (nicht Linear!!)
 				if (bewegung_verlangsamen > s.geschwindigkeit)
@@ -312,7 +354,7 @@ public:
 
 				// Spielfeldbegrenzung ++++++++++++++++++++++++++++++++
 				if (s.pos.at(0).x <= Spielbrettbegrenzung_x_min || s.pos.at(0).x > Spielbrettbegrenzung_x_max || s.pos.at(0).y <= Spielbrettbegrenzung_y_min || s.pos.at(0).y > Spielbrettbegrenzung_y_max) {
-					spielen = false; // Schließt nur, lässt nicht neu starten.
+					spielen = false; 
 				}
 
 				// Falls Schlange sich selbst essen will
@@ -326,6 +368,7 @@ public:
 			}
 
 		}
+		
 		else 
 		{
 			mx = input().mouse_x();
@@ -372,7 +415,7 @@ int main()
 	window.show();
 }
 
-//Methoden
+//++++++++++++++++++++++Methoden
 
 void Schlange::move()
 {
@@ -453,11 +496,4 @@ void Essen::random_posess()
 {
 	this->posess.x = (20 * random_x() + 20);
 	this->posess.y = (20 * random_y() + 120);
-}
-
-// Zeit aktualisieren
-
-time_t zeit_aktualisieren(){
-	time_t z = time(0);
-	return z;
 }
